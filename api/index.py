@@ -13,7 +13,7 @@ app.add_middleware(
 )
 
 @app.post("/")
-async def latency(request: Request):
+async def root(request: Request):
     body = await request.json()
     regions = body.get("regions", [])
     threshold = body.get("threshold_ms", 0)
