@@ -5,6 +5,7 @@ import numpy as np
 
 app = FastAPI()
 
+# Allow CORS for all origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -13,7 +14,7 @@ app.add_middleware(
 )
 
 @app.post("/")
-async def root(request: Request):
+async def latency(request: Request):
     body = await request.json()
     regions = body.get("regions", [])
     threshold = body.get("threshold_ms", 0)
@@ -40,3 +41,6 @@ async def root(request: Request):
         }
 
     return result
+
+# IMPORTANT FOR VERCEL
+handler = app
