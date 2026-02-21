@@ -12,7 +12,7 @@ def handler(request):
     regions = body.get("regions", [])
     threshold = body.get("threshold_ms", 0)
 
-    with open("telemetry.json") as f:
+    with open("q-vercel-latency.json") as f:
         data = json.load(f)
 
     result = {}
