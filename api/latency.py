@@ -1,14 +1,21 @@
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 import json
 import numpy as np
 
-def handler(request):
-    if request.method != "POST":
-        return {
-            "statusCode": 405,
-            "body": "Method Not Allowed"
-        }
+app = FastAPI()
 
-    body = request.get_json()
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["POST"],
+    allow_headers=["*"],
+)
+
+@app.post("/api/latency")
+async def latency(request: Request):
+    body = await request.json()
     regions = body.get("regions", [])
     threshold = body.get("threshold_ms", 0)
 
@@ -33,12 +40,4 @@ def handler(request):
             "breaches": sum(1 for l in latencies if l > threshold)
         }
 
-    return {
-        "statusCode": 200,
-        "headers": {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST",
-            "Content-Type": "application/json"
-        },
-        "body": json.dumps(result)
-    }
+    return result
