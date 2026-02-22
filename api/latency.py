@@ -9,13 +9,21 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["POST"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.post("/")
+@app.api_route("/", methods=["GET", "POST"])
 async def latency(request: Request):
-    body = await request.json()
+
+    if request.method == "GET":
+        return {"message": "Latency API is running. Use POST."}
+
+    try:
+        body = await request.json()
+    except:
+        return {"error": "Invalid JSON body"}
+
     regions = body.get("regions", [])
     threshold = body.get("threshold_ms", 0)
 
