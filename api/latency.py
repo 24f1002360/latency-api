@@ -2,10 +2,10 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import json
 import numpy as np
+import os
 
 app = FastAPI()
 
-# Enable CORS for POST from any origin
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,7 +19,9 @@ async def latency(request: Request):
     regions = body.get("regions", [])
     threshold = body.get("threshold_ms", 0)
 
-    with open("q-vercel-latency.json") as f:
+    file_path = os.path.join(os.path.dirname(__file__), "..", "q-vercel-latency.json")
+
+    with open(file_path) as f:
         data = json.load(f)
 
     result = {}
@@ -42,5 +44,4 @@ async def latency(request: Request):
 
     return result
 
-# 🔥 REQUIRED FOR VERCEL
 handler = app
